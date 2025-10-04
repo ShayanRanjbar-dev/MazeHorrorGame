@@ -34,24 +34,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Interact",
-                    "type": "Button",
-                    "id": "6751c9ad-bb40-434c-b47a-a4c75afb25ba",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Crouch",
-                    "type": "Button",
-                    "id": "c803b3c6-ce9a-4dd9-9386-3eb3bab72049",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Sprint",
                     "type": "Button",
                     "id": "7ac1adde-c553-4077-8098-6f0a63ee1d1c",
@@ -59,6 +41,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TouchPosition",
+                    "type": "Value",
+                    "id": "3c04e863-6029-4e6f-a2fa-3001ffa83557",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -152,17 +143,6 @@
                 },
                 {
                     "name": "",
-                    "id": "3f31da5d-ba09-4fbb-ac79-14ffc49b57e3",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "675b24a2-5b2b-47db-9589-9fcac3b6df6e",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -174,12 +154,12 @@
                 },
                 {
                     "name": "",
-                    "id": "3552cc05-8228-4d48-b81d-dbb4d76ef004",
-                    "path": "<Keyboard>/ctrl",
+                    "id": "be33bc3b-3753-4e6b-a6ef-54599bc025ff",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Crouch",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -191,6 +171,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "55a18f25-ac4b-4a78-887e-22ee0d62833d",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fab57f57-87b0-48df-96f5-5cde6295a178",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchPosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

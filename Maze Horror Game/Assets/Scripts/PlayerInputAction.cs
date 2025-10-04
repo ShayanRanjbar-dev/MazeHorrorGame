@@ -120,24 +120,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Interact"",
-                    ""type"": ""Button"",
-                    ""id"": ""6751c9ad-bb40-434c-b47a-a4c75afb25ba"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Crouch"",
-                    ""type"": ""Button"",
-                    ""id"": ""c803b3c6-ce9a-4dd9-9386-3eb3bab72049"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""7ac1adde-c553-4077-8098-6f0a63ee1d1c"",
@@ -145,6 +127,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TouchPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""3c04e863-6029-4e6f-a2fa-3001ffa83557"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -238,17 +229,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3f31da5d-ba09-4fbb-ac79-14ffc49b57e3"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""675b24a2-5b2b-47db-9589-9fcac3b6df6e"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
@@ -260,12 +240,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3552cc05-8228-4d48-b81d-dbb4d76ef004"",
-                    ""path"": ""<Keyboard>/ctrl"",
+                    ""id"": ""be33bc3b-3753-4e6b-a6ef-54599bc025ff"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Crouch"",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -279,6 +259,28 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55a18f25-ac4b-4a78-887e-22ee0d62833d"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fab57f57-87b0-48df-96f5-5cde6295a178"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -290,9 +292,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Camera = m_Player.FindAction("Camera", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
-        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
-        m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+        m_Player_TouchPosition = m_Player.FindAction("TouchPosition", throwIfNotFound: true);
     }
 
     ~@PlayerInputAction()
@@ -376,9 +377,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Camera;
     private readonly InputAction m_Player_Jump;
-    private readonly InputAction m_Player_Interact;
-    private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_Sprint;
+    private readonly InputAction m_Player_TouchPosition;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -403,17 +403,13 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Interact".
-        /// </summary>
-        public InputAction @Interact => m_Wrapper.m_Player_Interact;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/Crouch".
-        /// </summary>
-        public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
-        /// <summary>
         /// Provides access to the underlying input action "Player/Sprint".
         /// </summary>
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/TouchPosition".
+        /// </summary>
+        public InputAction @TouchPosition => m_Wrapper.m_Player_TouchPosition;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -449,15 +445,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
-            @Interact.started += instance.OnInteract;
-            @Interact.performed += instance.OnInteract;
-            @Interact.canceled += instance.OnInteract;
-            @Crouch.started += instance.OnCrouch;
-            @Crouch.performed += instance.OnCrouch;
-            @Crouch.canceled += instance.OnCrouch;
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
+            @TouchPosition.started += instance.OnTouchPosition;
+            @TouchPosition.performed += instance.OnTouchPosition;
+            @TouchPosition.canceled += instance.OnTouchPosition;
         }
 
         /// <summary>
@@ -478,15 +471,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
-            @Interact.started -= instance.OnInteract;
-            @Interact.performed -= instance.OnInteract;
-            @Interact.canceled -= instance.OnInteract;
-            @Crouch.started -= instance.OnCrouch;
-            @Crouch.performed -= instance.OnCrouch;
-            @Crouch.canceled -= instance.OnCrouch;
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
+            @TouchPosition.started -= instance.OnTouchPosition;
+            @TouchPosition.performed -= instance.OnTouchPosition;
+            @TouchPosition.canceled -= instance.OnTouchPosition;
         }
 
         /// <summary>
@@ -549,25 +539,18 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnInteract(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Crouch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnCrouch(InputAction.CallbackContext context);
-        /// <summary>
         /// Method invoked when associated input action "Sprint" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSprint(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TouchPosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTouchPosition(InputAction.CallbackContext context);
     }
 }

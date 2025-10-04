@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static Player Instance { get; private set; }
+
     [Header("Player Refrences")]
     [SerializeField] private InputManager inputManager;
     [SerializeField] private CharacterController characterController;
@@ -17,7 +19,6 @@ public class Player : MonoBehaviour
     [Header("Camera")]
     [SerializeField] private float cameraSensitivity = 0.2f;
     [SerializeField] private float lockRotation = 75f;
-    [SerializeField] private float maxInteractDistance = 3f;
 
     [Header("Jumping")]
     [SerializeField] private float jumpForce = 5f;
@@ -26,7 +27,6 @@ public class Player : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 4f;
     [SerializeField] private float accelerateSpeed = 0.4f;
-    [SerializeField] private float crouchSpeedMultiplier = 0.25f;
     [SerializeField] private float sprintSpeedMultiplier = 1.5f;
 
     private const float GROUND_VERTICAL_VELOCITY = -2f;
@@ -36,9 +36,7 @@ public class Player : MonoBehaviour
     private float verticalRotation = 0f;
     private Vector3 currentVelocity = Vector3.zero;
 
-    private bool isCrouching = false;
     private bool isJumping = false;
-    private bool isInteracting = false;
 
     private float CurrentSpeed => walkSpeed * currentSpeedMultiplier;
     private ITrashObject currentObject;
@@ -48,16 +46,18 @@ public class Player : MonoBehaviour
     private float bobAmount = 0.075f;
     private Vector3 startPos;
     private float footsteptime = 0f;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         startPos = mainCamera.transform.localPosition;
-        inputManager.OnPlayerInteractPressed += OnPlayerInteractPressed;
         inputManager.OnPlayerJumpPressed += OnPlayerJumpPressed;
     }
     private void Update()
     {
-        
-        HandleInteraction();
         HandleRotation();
     }
     private void FixedUpdate()
@@ -66,8 +66,11 @@ public class Player : MonoBehaviour
     }
     private Vector3 CalculateWorldDirection() 
     {
+
         Vector3 inputDirection = new(inputManager.Move.x , 0 , inputManager.Move.y);
         Vector3 direction = transform.TransformDirection(inputDirection);
+        currentSpeedMultiplier = 1f;
+        mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 75f, 0.2f);
         return direction.normalized;
     }
     private void CalculateVerticalVelocity() 
@@ -83,33 +86,20 @@ public class Player : MonoBehaviour
         }
         else currentVelocity.y += GRAVITY * gravityMultiplier * Time.deltaTime;
     }
-    private void CalculateSpeedMultiplier() 
+    private Vector3 CalculateSprinting() 
     {
-        if (characterController.isGrounded)
-        {
-            if (isCrouching) currentSpeedMultiplier = crouchSpeedMultiplier;
-            else if (inputManager.IsSprinting)
-            {
-                currentSpeedMultiplier = sprintSpeedMultiplier;
-                mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 85f, 0.2f);
-            }
-            else
-            {
-                currentSpeedMultiplier = 1f;
-                mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 75f, 0.3f);
-            }
-        }
-        else currentSpeedMultiplier = 1f;
-
+        currentSpeedMultiplier = sprintSpeedMultiplier;
+        mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 85f, 0.2f);
+        return transform.forward;
     }
     private void HandleVelocity() 
     {
-        CalculateSpeedMultiplier();
-        Vector3 worldDirection = CalculateWorldDirection() * CurrentSpeed;
+        Vector3 worldDirection = (inputManager.IsSprinting)? CalculateSprinting() : CalculateWorldDirection();
+        worldDirection *= CurrentSpeed;
         if (characterController.velocity.magnitude > 0.1f)
         {
             PlayFootstepAudio();
-            if (characterController.isGrounded && !isCrouching)
+            if (characterController.isGrounded)
             {
                 headBobTime += Time.deltaTime * bobSpeed * currentSpeedMultiplier;
                 float posX = Mathf.Cos(headBobTime) * bobAmount;
@@ -144,21 +134,7 @@ public class Player : MonoBehaviour
         ApplyHorizontalRotation(mouseXRotation);
         ApplyVerticalRotation(mouseYRotation);
     }
-    private void HandleInteraction() 
-    {
-        Ray interactionRay = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
-        bool isRayHitting =  Physics.Raycast( interactionRay , out RaycastHit hitInfo, maxInteractDistance, interactLayer);
-        if (isRayHitting)
-        {
-            bool isObject = hitInfo.collider.TryGetComponent<ITrashObject>(out ITrashObject trashObject);
-            if (isObject)
-            {
-                isInteracting = true;
-                currentObject = trashObject;
-                currentObject.SelectObject();
-            }
-        }
-    }
+
     private void PlayFootstepAudio() 
     {
         if (characterController.isGrounded)
@@ -175,15 +151,8 @@ public class Player : MonoBehaviour
     }
     private void OnPlayerJumpPressed()
     {
-        if (characterController.isGrounded && !isCrouching) isJumping = true;
+        if (characterController.isGrounded) isJumping = true;
     }
-
-    private void OnPlayerInteractPressed()
-    {
-        if (!isInteracting && currentObject == null) return;
-        currentObject.InteractObject();
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         bool isCollectible = other.TryGetComponent<Collectible>(out Collectible collectible);

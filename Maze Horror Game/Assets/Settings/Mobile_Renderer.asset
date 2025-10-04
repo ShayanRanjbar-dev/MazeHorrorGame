@@ -26,7 +26,8 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 0}
   m_RendererFeatures:
   - {fileID: 4971333608162417807}
-  m_RendererFeatureMap: 8f5c7bce93b9fd44
+  - {fileID: 4984920507167664397}
+  m_RendererFeatureMap: 8f5c7bce93b9fd440de9493fcafe2d45
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -81,3 +82,23 @@ MonoBehaviour:
     BlurQuality: 0
     Falloff: 100
     SampleCount: -1
+--- !u!114 &4984920507167664397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: FullScreenPassRendererFeature
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
+  m_Active: 1
+  injectionPoint: 600
+  fetchColorBuffer: 1
+  requirements: 0
+  passMaterial: {fileID: 2100000, guid: e361e046789c7ef468d246ffe0bab163, type: 2}
+  passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1

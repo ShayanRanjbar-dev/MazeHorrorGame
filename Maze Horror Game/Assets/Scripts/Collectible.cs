@@ -1,8 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
     [SerializeField] private float rotateSpeed = 2f;
+    [SerializeField] private MeshRenderer collectibleVisual;
+    [SerializeField] private Light collectibleLight;
     private float rotateTime = 0f;
     private Vector3 startPos;
     
@@ -19,6 +22,20 @@ public class Collectible : MonoBehaviour
     }
     public void DestroyCollectible() 
     {
-        Destroy(gameObject);
+        collectibleVisual.enabled = false;
+        collectibleLight.enabled = false;
+        StartCoroutine(KillObject());
+    }
+    private IEnumerator KillObject() 
+    {
+        if (TryGetComponent<AudioSource>(out AudioSource audioSource)) 
+        {
+            while (audioSource.volume > 0f)
+            {
+                audioSource.volume -= Time.deltaTime * 2;
+                yield return null;
+            }
+            Destroy(gameObject);
+        }
     }
 }

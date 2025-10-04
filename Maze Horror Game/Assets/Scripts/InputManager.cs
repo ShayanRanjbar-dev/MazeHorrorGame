@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 public class InputManager : MonoBehaviour
 {
     private PlayerInputAction inputActions;
@@ -10,8 +9,28 @@ public class InputManager : MonoBehaviour
     public bool IsSprinting { get; private set; }
 
     public event Action OnPlayerJumpPressed;
-    public event Action OnPlayerCrouchPressed;
-    public event Action OnPlayerInteractPressed;
+
+    private void Update()
+    {
+            HandleTouch();
+    }
+    private void HandleTouch()
+    {
+        Camera = Vector2.zero;
+        if (Touchscreen.current != null)
+        {
+            foreach (var touchRaw in Touchscreen.current.touches)
+            {
+                if (touchRaw.press.isPressed)
+                {
+                    if (touchRaw.startPosition.ReadValue().x > Screen.width / 2)
+                    {
+                        Camera = touchRaw.delta.ReadValue();
+                    }
+                }
+            }
+        }
+    }
     private void SubscribeInputActions()
     {
         inputActions.Player.Move.performed += OnMovePerformed;
@@ -21,9 +40,7 @@ public class InputManager : MonoBehaviour
         inputActions.Player.Sprint.performed += OnSprintPerformed;
         inputActions.Player.Sprint.canceled += OnSprintCanceled;
         inputActions.Player.Jump.performed += OnJumpPerformed;
-        inputActions.Player.Crouch.performed += OnCrouchPerformed;
-        inputActions.Player.Interact.performed += OnInteractPerformed;
-    } 
+    }
     private void UnSubscribeInputActions()
     {
         inputActions.Player.Move.performed -= OnMovePerformed;
@@ -33,12 +50,8 @@ public class InputManager : MonoBehaviour
         inputActions.Player.Sprint.performed -= OnSprintPerformed;
         inputActions.Player.Sprint.canceled -= OnSprintCanceled;
         inputActions.Player.Jump.performed -= OnJumpPerformed;
-        inputActions.Player.Crouch.performed -= OnCrouchPerformed;
-        inputActions.Player.Interact.performed -= OnInteractPerformed;
     }
     private void Awake() => inputActions = new PlayerInputAction();
-    private void OnInteractPerformed(InputAction.CallbackContext obj) => OnPlayerInteractPressed?.Invoke();
-    private void OnCrouchPerformed(InputAction.CallbackContext obj) => OnPlayerCrouchPressed?.Invoke();
     private void OnJumpPerformed(InputAction.CallbackContext obj) => OnPlayerJumpPressed?.Invoke();
     private void OnSprintCanceled(InputAction.CallbackContext obj) => IsSprinting = false;
     private void OnSprintPerformed(InputAction.CallbackContext obj) => IsSprinting = true;
@@ -51,7 +64,7 @@ public class InputManager : MonoBehaviour
         inputActions.Enable();
         SubscribeInputActions();
     }
-    private void OnDisable() 
+    private void OnDisable()
     {
         UnSubscribeInputActions();
         inputActions.Disable();
