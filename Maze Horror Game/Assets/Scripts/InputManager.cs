@@ -7,11 +7,16 @@ public class InputManager : MonoBehaviour
     public Vector2 Move { get; private set; }
     public Vector2 Camera { get; private set; }
     public bool IsSprinting { get; private set; }
+    public bool LookingBack { get; private set; }
 
     public event Action OnPlayerJumpPressed;
 
     private void Update()
     {
+        if (LookingBack)
+        {
+            return;
+        }
             HandleTouch();
     }
     private void HandleTouch()
@@ -40,7 +45,20 @@ public class InputManager : MonoBehaviour
         inputActions.Player.Sprint.performed += OnSprintPerformed;
         inputActions.Player.Sprint.canceled += OnSprintCanceled;
         inputActions.Player.Jump.performed += OnJumpPerformed;
+        inputActions.Player.LookBack.performed += OnLookBackPerformed;
+        inputActions.Player.LookBack.canceled += OnlookBackCanceled;
     }
+
+    private void OnlookBackCanceled(InputAction.CallbackContext obj)
+    {
+        LookingBack = false;
+    }
+
+    private void OnLookBackPerformed(InputAction.CallbackContext obj)
+    {
+        LookingBack = true;
+    }
+
     private void UnSubscribeInputActions()
     {
         inputActions.Player.Move.performed -= OnMovePerformed;
@@ -50,6 +68,8 @@ public class InputManager : MonoBehaviour
         inputActions.Player.Sprint.performed -= OnSprintPerformed;
         inputActions.Player.Sprint.canceled -= OnSprintCanceled;
         inputActions.Player.Jump.performed -= OnJumpPerformed;
+        inputActions.Player.LookBack.performed += OnLookBackPerformed;
+        inputActions.Player.LookBack.canceled += OnlookBackCanceled;
     }
     private void Awake() => inputActions = new PlayerInputAction();
     private void OnJumpPerformed(InputAction.CallbackContext obj) => OnPlayerJumpPressed?.Invoke();

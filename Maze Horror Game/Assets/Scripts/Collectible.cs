@@ -14,7 +14,7 @@ public class Collectible : MonoBehaviour
         startPos = transform.position;
     }
 
-    private void Update()
+    public void PlayMoveAnimation() 
     {
         rotateTime += Time.deltaTime * rotateSpeed;
         float newYPosition = Mathf.Sin(rotateTime) / 2;
@@ -24,6 +24,7 @@ public class Collectible : MonoBehaviour
     {
         collectibleVisual.enabled = false;
         collectibleLight.enabled = false;
+        GameManager.Instance.RemoveCollectible(this);
         StartCoroutine(KillObject());
     }
     private IEnumerator KillObject() 

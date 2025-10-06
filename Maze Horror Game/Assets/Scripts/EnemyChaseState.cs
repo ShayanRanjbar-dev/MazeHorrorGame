@@ -1,10 +1,9 @@
 using UnityEngine;
-
 public class EnemyChaseState : IEnemyState
 {
     public void Enter(EnemyAi enemy)
     {
-        Debug.Log("Enemy Chase Player!");
+        Debug.Log("Enemy is Chasing Player!");
     }
 
     public void Execute(EnemyAi enemy)

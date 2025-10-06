@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     private Vector3 lastRandomPosition;
     private Vector2Int Xpos = new(-124, 0);
     private Vector2Int Zpos = new(-114, 0);
-    private List<Vector3> spawnedPositions = new();
+    private List<Collectible> spawnedCollectibles = new();
     private int score = 0;
 
     public static GameManager Instance { get; private set; }
@@ -30,14 +30,17 @@ public class GameManager : MonoBehaviour
             SpawnCollectible();
         }
     }
+    private void Update()
+    {
+        CollectibleAnimation();
+    }
     private void SpawnCollectible() 
     {
         Vector3 randomPos = GetRandomPosition();
         if (!Physics.CheckSphere(randomPos,0.8f) &&
             IsFarEnough(randomPos))
         {
-            Instantiate(collectibleObject, randomPos, Quaternion.identity);
-            spawnedPositions.Add(randomPos);
+            spawnedCollectibles.Add(Instantiate(collectibleObject, randomPos, Quaternion.identity));
         }
         else 
         {
@@ -63,12 +66,24 @@ public class GameManager : MonoBehaviour
     }
     private bool IsFarEnough(Vector3 newPos)
     {
-        foreach (Vector3 pos in spawnedPositions)
+        foreach (Collectible spawnedColl in spawnedCollectibles)
         {
-            if (Vector3.Distance(newPos, pos) < minDistance)
+            if (Vector3.Distance(newPos, spawnedColl.transform.position) < minDistance)
                 return false;
         }
         return true;
+    }
+    private void CollectibleAnimation() 
+    {
+
+        for (int i = 0; i < spawnedCollectibles.Count; ++i) 
+        {
+            spawnedCollectibles[i].PlayMoveAnimation();
+        }
+    }
+    public void RemoveCollectible(Collectible collectible) 
+    {
+        spawnedCollectibles.Remove(collectible);
     }
     public void GameOver() 
     {

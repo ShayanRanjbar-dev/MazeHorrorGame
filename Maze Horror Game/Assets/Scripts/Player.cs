@@ -1,10 +1,10 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public static Player Instance { get; private set; }
+    public event Action OnPlayerDied;
 
     [Header("Player Refrences")]
     [SerializeField] private InputManager inputManager;
@@ -12,7 +12,6 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform cameraHolder;
     [SerializeField] private FlashLight flashLight;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private LayerMask interactLayer;
     [SerializeField] private AudioSource footstepAudio;
 
     [Header("Player Attributes")]
@@ -39,7 +38,6 @@ public class Player : MonoBehaviour
     private bool isJumping = false;
 
     private float CurrentSpeed => walkSpeed * currentSpeedMultiplier;
-    private ITrashObject currentObject;
 
     private float headBobTime = 0f;
     private float bobSpeed = 5f;
@@ -49,6 +47,8 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 90;
         Instance = this;
     }
     private void Start()
@@ -88,8 +88,17 @@ public class Player : MonoBehaviour
     }
     private Vector3 CalculateSprinting() 
     {
-        currentSpeedMultiplier = sprintSpeedMultiplier;
-        mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 85f, 0.2f);
+        if (characterController.isGrounded)
+        {
+            currentSpeedMultiplier = sprintSpeedMultiplier;
+            mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 85f, 0.2f);
+            
+        }
+        else
+        {
+            currentSpeedMultiplier = 1f;
+            mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 75f, 0.2f);
+        }
         return transform.forward;
     }
     private void HandleVelocity() 
@@ -128,11 +137,21 @@ public class Player : MonoBehaviour
     }
     private void HandleRotation()
     {
-        float mouseXRotation = inputManager.Camera.x * cameraSensitivity;
-        float mouseYRotation = inputManager.Camera.y * cameraSensitivity;
-        flashLight.ApplyFlashlightRotation(mouseXRotation, mouseYRotation);
-        ApplyHorizontalRotation(mouseXRotation);
-        ApplyVerticalRotation(mouseYRotation);
+        if (inputManager.LookingBack)
+        {
+            Quaternion newRot = Quaternion.Euler(0f, -135f, 8f);
+            mainCamera.transform.localRotation = Quaternion.Lerp(mainCamera.transform.localRotation, newRot , 0.2f);
+        }
+        else
+        {
+            Quaternion newRot = Quaternion.Euler(0f, 0f, 0f);
+            mainCamera.transform.localRotation = Quaternion.Lerp(mainCamera.transform.localRotation, newRot, 0.2f);
+            float mouseXRotation = inputManager.Camera.x * cameraSensitivity;
+            float mouseYRotation = inputManager.Camera.y * cameraSensitivity;
+            flashLight.ApplyFlashlightRotation(mouseXRotation, mouseYRotation);
+            ApplyHorizontalRotation(mouseXRotation);
+            ApplyVerticalRotation(mouseYRotation);
+        }
     }
 
     private void PlayFootstepAudio() 
@@ -149,23 +168,27 @@ public class Player : MonoBehaviour
             footstepAudio.Play();
         }
     }
+    private void PlayerDied() 
+    {
+        mainCamera.enabled = false;
+        OnPlayerDied?.Invoke();
+        gameObject.SetActive(false);
+    }
     private void OnPlayerJumpPressed()
     {
         if (characterController.isGrounded) isJumping = true;
     }
     private void OnTriggerEnter(Collider other)
     {
-        bool isCollectible = other.TryGetComponent<Collectible>(out Collectible collectible);
-        if (isCollectible) 
+        if (other.TryGetComponent<Collectible>(out Collectible collectible)) 
         {
             collectible.DestroyCollectible();
             GameManager.Instance.AddScore();
         }
-
-        bool isClown = other.TryGetComponent<EnemyAi>(out EnemyAi enemy);
-        if (isClown)
+        if (other.TryGetComponent<EnemyAi>(out EnemyAi enemy))
         {
-            GameManager.Instance.GameOver();
+            PlayerDied();
+            enemy.CatchPlayer();
         }
     }
 }

@@ -1,6 +1,4 @@
 using UnityEngine;
-using static EnemyAi;
-
 public class EnemyWanderState : IEnemyState
 {
     private Vector3 destination;
