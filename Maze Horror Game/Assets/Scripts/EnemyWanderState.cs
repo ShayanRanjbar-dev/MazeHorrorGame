@@ -13,7 +13,6 @@ public class EnemyWanderState : IEnemyState
 
     public void Execute(EnemyAi enemy)
     {
-        enemy.IsPlayerInSight();
         Vector2 enemyTransform = new(enemy.transform.position.x, enemy.transform.position.z);
         Vector2 NewDestination = new(destination.x, destination.z);
         if (Vector2.Distance(enemyTransform, NewDestination) <= MIN_WANDER_DISTANCE) 

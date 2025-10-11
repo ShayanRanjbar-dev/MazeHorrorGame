@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -6,7 +7,14 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public class EnemyCatchPlayerArgs : EventArgs
+    {
+        public EnemyAi enemy;
+    }
+    public event EventHandler<EnemyCatchPlayerArgs> OnEnemyCatchPlayer;
     public event Action<int> OnScoreAdded;
+    public event Action<int> OnGameOver;
+
     [SerializeField] private Collectible collectibleObject;
     [SerializeField] private int collectibleCount = 20;
     [SerializeField] private int minDistance = 8;
@@ -25,10 +33,18 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
+        StartCoroutine(StartSpawn());
+    }
+    private IEnumerator StartSpawn() 
+    {
+        yield return new WaitUntil(() => IsNavMeshReady());
         for (int i = 0; i < collectibleCount; i++)
-        {
             SpawnCollectible();
-        }
+    }
+    private bool IsNavMeshReady()
+    {
+        NavMeshTriangulation data = NavMesh.CalculateTriangulation();
+        return data.vertices != null && data.vertices.Length > 0;
     }
     private void Update()
     {
@@ -88,6 +104,10 @@ public class GameManager : MonoBehaviour
     }
     public void GameOver() 
     {
+        OnGameOver?.Invoke(score);
+    }
+    public void RestartGame() 
+    {
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadSceneAsync(scene.buildIndex);
     }
@@ -99,5 +119,9 @@ public class GameManager : MonoBehaviour
         {
             Application.Quit();
         }
+    }
+    public void EnemyCatchPlayer(EnemyAi enemy) 
+    {
+        OnEnemyCatchPlayer?.Invoke(this , new EnemyCatchPlayerArgs { enemy = enemy});
     }
 }

@@ -79,6 +79,20 @@ public class InputManager : MonoBehaviour
     private void OnCameraPerformed(InputAction.CallbackContext obj) => Camera = obj.ReadValue<Vector2>();
     private void OnMoveCanceled(InputAction.CallbackContext obj) => Move = Vector2.zero;
     private void OnMovePerformed(InputAction.CallbackContext obj) => Move = obj.ReadValue<Vector2>();
+    private void Start()
+    {
+        Player.Instance.OnPlayerDied += OnPlayerDied;
+    }
+
+    private void OnPlayerDied()
+    {
+        Move = Vector2.zero;
+        IsSprinting = false;
+        UnSubscribeInputActions();
+        inputActions.Disable();
+        inputActions.Dispose();
+    }
+
     private void OnEnable()
     {
         inputActions.Enable();

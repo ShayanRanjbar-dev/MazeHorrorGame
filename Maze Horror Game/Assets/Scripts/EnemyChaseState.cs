@@ -1,4 +1,3 @@
-using UnityEngine;
 public class EnemyChaseState : IEnemyState
 {
     public void Enter(EnemyAi enemy)
@@ -7,7 +6,6 @@ public class EnemyChaseState : IEnemyState
 
     public void Execute(EnemyAi enemy)
     {
-        enemy.IsPlayerInSight();
         enemy.SetEnemyDestination(Player.Instance.transform.position);
     }
 

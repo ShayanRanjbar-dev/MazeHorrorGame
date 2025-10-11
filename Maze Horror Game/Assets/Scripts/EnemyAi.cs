@@ -19,11 +19,22 @@ public class EnemyAi : MonoBehaviour
     private void Start()
     {
         ChangeEnemyState(new EnemyWanderState());
+        GameManager.Instance.OnEnemyCatchPlayer += OnEnemyCatchPlayer;
     }
+
+    private void OnEnemyCatchPlayer(object sender, GameManager.EnemyCatchPlayerArgs e)
+    {
+        if (e.enemy == this)
+        {
+            return;
+        }
+        Destroy(gameObject);
+    }
+
     private void Update()
     {
-        currentState?.Execute(this);
-        
+        IsPlayerInSight();
+        currentState?.Execute(this); 
     }
     public void ChangeEnemyState(IEnemyState newState)
     {
@@ -35,7 +46,7 @@ public class EnemyAi : MonoBehaviour
     {
         agent.SetDestination(destination);
     }
-    public void IsPlayerInSight()
+    private void IsPlayerInSight()
     {
         Vector3 eyePos = transform.position + Vector3.up * 1.8f;
         Vector3 dirToPlayer = (Player.Instance.transform.position - eyePos).normalized;
@@ -50,7 +61,10 @@ public class EnemyAi : MonoBehaviour
                 }
                 else
                 {
-                    if (currentState is EnemyChaseState) ChangeEnemyState(new EnemyFindState());
+                    if (currentState is EnemyChaseState) 
+                    {
+                        ChangeEnemyState(new EnemyFindState());
+                    } 
                 } 
                 
             }
@@ -60,9 +74,8 @@ public class EnemyAi : MonoBehaviour
     }
     public void CatchPlayer() 
     {
+        GameManager.Instance.EnemyCatchPlayer(this);
         AudioSource footStep = GetComponent<AudioSource>();
-        AudioListener listener = GetComponent<AudioListener>();
-        listener.enabled = true;
         footStep.Stop();
         gameOverCamera.enabled = true;
         animator.SetBool(CATCH_PLAYER, true);

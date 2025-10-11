@@ -16,6 +16,6 @@ public class ScoreUi : MonoBehaviour
     }
     private void OnScoreAdded(int obj)
     {
-        scoreText.text = obj.ToString() + "/20";
+        scoreText.text = $"{obj}/20";
     }
 }

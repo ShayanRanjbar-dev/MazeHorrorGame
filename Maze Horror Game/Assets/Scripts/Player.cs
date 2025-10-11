@@ -171,9 +171,8 @@ public class Player : MonoBehaviour
     }
     private void PlayerDied() 
     {
-        mainCamera.enabled = false;
         OnPlayerDied?.Invoke();
-        gameObject.SetActive(false);
+        mainCamera.enabled = false;
     }
     private void OnPlayerJumpPressed()
     {
@@ -187,8 +186,8 @@ public class Player : MonoBehaviour
         }
         if (other.TryGetComponent<EnemyAi>(out EnemyAi enemy))
         {
-            PlayerDied();
             enemy.CatchPlayer();
+            PlayerDied();
         }
         if (other.TryGetComponent<SpinningCat>(out SpinningCat cat))
         {

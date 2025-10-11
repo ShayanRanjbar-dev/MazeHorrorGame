@@ -4,7 +4,7 @@ public class EnemyFindState : IEnemyState
     private float findTime = 2.5f;
     public void Enter(EnemyAi enemy)
     {
-        findTime = UnityEngine.Random.Range(1.5f, 2.5f);
+        findTime = Random.Range(1.5f, 2.5f);
     }
     public void Execute(EnemyAi enemy)
     {
