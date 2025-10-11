@@ -68,6 +68,7 @@ public class Player : MonoBehaviour
     {
 
         Vector3 inputDirection = new(inputManager.Move.x , 0 , inputManager.Move.y);
+        
         Vector3 direction = transform.TransformDirection(inputDirection);
         currentSpeedMultiplier = 1f;
         mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 75f, 0.2f);
@@ -183,12 +184,22 @@ public class Player : MonoBehaviour
         if (other.TryGetComponent<Collectible>(out Collectible collectible)) 
         {
             collectible.DestroyCollectible();
-            GameManager.Instance.AddScore();
         }
         if (other.TryGetComponent<EnemyAi>(out EnemyAi enemy))
         {
             PlayerDied();
             enemy.CatchPlayer();
+        }
+        if (other.TryGetComponent<SpinningCat>(out SpinningCat cat))
+        {
+            cat.PlaySpinningAnimation();
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<SpinningCat>(out SpinningCat cat))
+        {
+            cat.StopSpinningAnimation();
         }
     }
 }

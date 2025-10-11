@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-
 public class Collectible : MonoBehaviour
 {
     [SerializeField] private float rotateSpeed = 2f;
@@ -24,6 +23,7 @@ public class Collectible : MonoBehaviour
     {
         collectibleVisual.enabled = false;
         collectibleLight.enabled = false;
+        GameManager.Instance.AddScore();
         GameManager.Instance.RemoveCollectible(this);
         StartCoroutine(KillObject());
     }

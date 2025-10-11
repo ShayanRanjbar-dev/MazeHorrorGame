@@ -5,7 +5,6 @@ public class EnemyRestState : IEnemyState
     public void Enter(EnemyAi enemy)
     {
         restTime = UnityEngine.Random.Range(1f, 2.5f);
-        Debug.Log($"enemy rest for {restTime} seconds");
     }
 
     public void Execute(EnemyAi enemy)
@@ -20,7 +19,6 @@ public class EnemyRestState : IEnemyState
 
     public void Exit(EnemyAi enemy)
     {
-        Debug.Log("enemy finished resting");
     }
 
 }

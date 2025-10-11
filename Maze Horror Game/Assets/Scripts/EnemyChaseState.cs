@@ -3,7 +3,6 @@ public class EnemyChaseState : IEnemyState
 {
     public void Enter(EnemyAi enemy)
     {
-        Debug.Log("Enemy is Chasing Player!");
     }
 
     public void Execute(EnemyAi enemy)
@@ -14,6 +13,5 @@ public class EnemyChaseState : IEnemyState
 
     public void Exit(EnemyAi enemy)
     {
-        Debug.Log("enemy quits chasing");
     }
 }

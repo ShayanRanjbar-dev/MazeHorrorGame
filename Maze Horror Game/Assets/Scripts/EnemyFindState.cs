@@ -5,9 +5,7 @@ public class EnemyFindState : IEnemyState
     public void Enter(EnemyAi enemy)
     {
         findTime = UnityEngine.Random.Range(1.5f, 2.5f);
-        Debug.Log("enemy is trying to find player!");
     }
-
     public void Execute(EnemyAi enemy)
     {
         findTime -= Time.deltaTime;
@@ -21,6 +19,5 @@ public class EnemyFindState : IEnemyState
 
     public void Exit(EnemyAi enemy)
     {
-        Debug.Log("enemy Finished Finding");
     }
 }

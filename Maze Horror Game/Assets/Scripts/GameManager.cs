@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
             IsFarEnough(randomPos))
         {
             spawnedCollectibles.Add(Instantiate(collectibleObject, randomPos, Quaternion.identity));
+
         }
         else 
         {
@@ -76,7 +77,7 @@ public class GameManager : MonoBehaviour
     private void CollectibleAnimation() 
     {
 
-        for (int i = 0; i < spawnedCollectibles.Count; ++i) 
+        for (int i = 0; i < spawnedCollectibles.Count; ++i)
         {
             spawnedCollectibles[i].PlayMoveAnimation();
         }

@@ -9,7 +9,6 @@ public class EnemyWanderState : IEnemyState
     {
         destination = GetDestination(enemy);
         enemy.SetEnemyDestination(destination);
-        Debug.Log($"enemy wander pos is {destination}");
     }
 
     public void Execute(EnemyAi enemy)
@@ -25,7 +24,6 @@ public class EnemyWanderState : IEnemyState
 
     public void Exit(EnemyAi enemy)
     {
-        Debug.Log("enemy finished wandering");
     }
 
     private Vector3 GetDestination(EnemyAi enemy)
